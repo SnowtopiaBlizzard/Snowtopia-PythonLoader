@@ -1,10 +1,25 @@
 import argparse
 import os
+import requests
+import json
+import logging
 import newest
 import patcher
 import kill
 
-from colours import CMDCOLOURS
+logging.basicConfig(
+    level=logging.DEBUG,  # Set the minimum logging level
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',  # Log format
+    handlers=[
+        logging.StreamHandler()  # Output logs to console
+        # Optionally add a file handler to output logs to a file
+        # logging.FileHandler('application.log')
+    ]
+)
+
+logger = logging.getLogger(__name__)  # Create a logger object
+
+logger = logging.getLogger(__name__)
 
 # Setup command-line arguments
 parser = argparse.ArgumentParser(description="Snowtopia Blizzard Mod Updater")
@@ -19,18 +34,18 @@ if args.r == "y":
 
 # Define headers and token for HTTP requests
 headers = {
-    "User-Agent": "SnowtopiaBlizzard/BootAgent", 
+    "User-Agent": "SnowtopiaBlizzard/BootAgent",
     "Host": "bamsestudio.dk"
 }
-token = "27984bd5bd17791d89fe5d09ceff46b004c1f878cce2d658c611fc926dab0573c8efddc49eb7d44662adfd36d900f6b7c255b106849d7320d3f6d7e2517ad5696ea3c8e35bbb9ebc6ae47a4629902ce988bd9630982c5c7ab4c0e9f1b4d66a7b829a7d6ccfee40e5cb3e1db78bdd5769f297f84d440079f27c0180c9c635ac5f"
+token = "your-token-here"
 
-print(CMDCOLOURS.OKGREEN + "Booting up Blizzard!")
+logger.info("Booting up Blizzard!")
 
 # Paths for Snowtopia and version file
 snowtopia_exe = r"C:\Program Files (x86)\Steam\steamapps\common\Snowtopia\Snowtopia.Game.exe"
 version_file_path = os.path.join(os.path.dirname(snowtopia_exe), "Blizzard/Data/Version.txt")
 
-print(CMDCOLOURS.OKCYAN + "Using Snowtopia File Path: " + snowtopia_exe)
+logger.debug("Using Snowtopia File Path: %s", snowtopia_exe)
 
 # Determine the current and latest versions
 has_latest = None
@@ -42,11 +57,10 @@ if args.version != "latest":
 else:
     latest_version, has_latest = newest.install_newest(version_file_path, headers)
 
-# Check if the latest version is installed
 if has_latest:
-    print(CMDCOLOURS.OKCYAN + "You have the latest version, starting game.")
+    logger.info("You have the latest version, starting game.")
 else:
-    print(CMDCOLOURS.FAIL + "You do not have the latest version, downloading latest!")
+    logger.info("You do not have the latest version, downloading latest!")
 
     download_url = "https://bamsestudio.dk/api/snowtopia/install/latest"
 
@@ -68,10 +82,8 @@ else:
     # Update the version file
     with open(version_file_path, "w") as file:
         file.write(latest_version)
-    
-    print(CMDCOLOURS.OKGREEN + "Latest version is now downloaded, starting game.")
 
-print(CMDCOLOURS.ENDC)
+    logger.info("Latest version is now downloaded, starting game.")
 
 # Start the Snowtopia game
 os.system(f'call "{snowtopia_exe}"')
