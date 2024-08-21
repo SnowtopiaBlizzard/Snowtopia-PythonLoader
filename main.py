@@ -1,27 +1,15 @@
 import argparse
 import os
-import urllib.parse
 import requests
 import json
+import patcher
 
-import urllib.parse
-
-class CMDCOLOURS:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKCYAN = '\033[96m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
+from colours import *
 
 parser = argparse.ArgumentParser(description="Snowtopia Blizzard Mod Updater")
 parser.add_argument("--version", required=False, default="latest", help="Version name to download")
 parser.add_argument("--download-components", required=False, default=None, help="Compontents to download")
 args = parser.parse_args()
-
 
 headers = {
     "User-Agent": "SnowtopiaBlizzard/BootAgent", 
@@ -59,6 +47,15 @@ if (versionContent == latestVersion):
     print(CMDCOLOURS.OKCYAN + "You have the latest version, starting game.")
 else:
     print(CMDCOLOURS.FAIL + "You dont have the latest version, downloading latest!")
+
+    patcher.install_latest_version(
+            download_url="https://bamsestudio.dk/api/snowtopia/install/latest",  # Update the URL as needed
+            zip_file_path=os.path.join(snowtopiaExe, "../Blizzard/Data/out.bd"),
+            zip_extraction_path=os.path.join(snowtopiaExe, "../Blizzard/Data/ZipOut"),
+            data_path=os.path.join(snowtopiaExe, "../Snowtopia_Data/"),
+            headers=headers
+        )
+
     with open(versionFilePath, "w") as file:
         file.write(latestVersion)
     print(CMDCOLOURS.OKGREEN + "Latest version is now dowloaded, starting game.")
