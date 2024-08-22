@@ -8,8 +8,21 @@ import kill
 if os.path.exists("blizzard.log"):
     os.remove("blizzard.log")
 
+# Setup command-line arguments
+parser = argparse.ArgumentParser(description="Snowtopia Blizzard Mod Updater")
+parser.add_argument("--version", required=False, default="latest", help="Version name to download")
+parser.add_argument("--download-components", required=False, default=None, help="Components to download")
+parser.add_argument("-f", default="", help="Flags. (include k to kill Snowtopia) (include n to not start Snowtopia) (include d for debuging)", required=False)
+args = parser.parse_args()
+
+isDebug = not (str(args.f).find("d") == -1)
+level = logging.INFO
+
+if (isDebug):
+    level = logging.DEBUG
+
 logging.basicConfig(
-    level=logging.DEBUG,  # Set the minimum logging level
+    level=level,  # Set the minimum logging level
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',  # Log format
     handlers=[
         logging.StreamHandler(),
@@ -20,13 +33,6 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)  # Create a logger object
 
 snowtopiaPath = r"C:\Program Files (x86)\Steam\steamapps\common\Snowtopia"
-
-# Setup command-line arguments
-parser = argparse.ArgumentParser(description="Snowtopia Blizzard Mod Updater")
-parser.add_argument("--version", required=False, default="latest", help="Version name to download")
-parser.add_argument("--download-components", required=False, default=None, help="Components to download")
-parser.add_argument("-f", default="", help="Flags. (include k to kill Snowtopia) (include n to not start Snowtopia)", required=False)
-args = parser.parse_args()
 
 killSnowtopia = not (str(args.f).find("k") == -1)
 startSnowtopia = str(args.f).find("n") == -1
