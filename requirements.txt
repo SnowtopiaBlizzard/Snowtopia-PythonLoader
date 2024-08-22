@@ -1,3 +1,4 @@
 pefile
 argparse
 psutil
+diff-match-patch

@@ -1,25 +1,25 @@
 import argparse
 import os
-import requests
-import json
 import logging
 import newest
 import patcher
 import kill
 
+if os.path.exists("blizzard.log"):
+    os.remove("blizzard.log")
+
 logging.basicConfig(
     level=logging.DEBUG,  # Set the minimum logging level
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',  # Log format
     handlers=[
-        logging.StreamHandler()  # Output logs to console
-        # Optionally add a file handler to output logs to a file
-        # logging.FileHandler('application.log')
+        logging.StreamHandler(),
+        logging.FileHandler('blizzard.log')
     ]
 )
 
 logger = logging.getLogger(__name__)  # Create a logger object
 
-logger = logging.getLogger(__name__)
+snowtopiaPath = r"C:\Program Files (x86)\Steam\steamapps\common\Snowtopia"
 
 # Setup command-line arguments
 parser = argparse.ArgumentParser(description="Snowtopia Blizzard Mod Updater")
@@ -27,6 +27,12 @@ parser.add_argument("--version", required=False, default="latest", help="Version
 parser.add_argument("--download-components", required=False, default=None, help="Components to download")
 parser.add_argument("-r", help="Restart the program. (Set to y)", required=False)
 args = parser.parse_args()
+
+os.makedirs(snowtopiaPath + r"\Blizzard", exist_ok=True)
+os.makedirs(snowtopiaPath + r"\Blizzard\Data", exist_ok=True)
+
+if (not os.path.exists(snowtopiaPath + r"\Blizzard\Data\Version.txt")):
+    open(snowtopiaPath + r"\Blizzard\Data\Version.txt", "w").close()
 
 # Restart the Snowtopia process if requested
 if args.r == "y":
@@ -42,10 +48,10 @@ token = "your-token-here"
 logger.info("Booting up Blizzard!")
 
 # Paths for Snowtopia and version file
-snowtopia_exe = r"C:\Program Files (x86)\Steam\steamapps\common\Snowtopia\Snowtopia.Game.exe"
-version_file_path = os.path.join(os.path.dirname(snowtopia_exe), "Blizzard/Data/Version.txt")
+snowtopia_exe = snowtopiaPath + r"\Snowtopia.Game.exe"
+version_file_path = os.path.join(snowtopiaPath, "Blizzard/Data/Version.txt")
 
-logger.debug("Using Snowtopia File Path: %s", snowtopia_exe)
+logger.debug("Using Snowtopia File Path: %s", snowtopiaPath)
 
 # Determine the current and latest versions
 has_latest = None
@@ -73,9 +79,9 @@ else:
     # Install the latest version
     patcher.install_latest_version(
         download_url=download_url,
-        zip_file_path=os.path.join(os.path.dirname(snowtopia_exe), "Blizzard/Data/out.bd"),
-        zip_extraction_path=os.path.join(os.path.dirname(snowtopia_exe), "Blizzard/Data/ZipOut"),
-        data_path=os.path.join(os.path.dirname(snowtopia_exe), "Snowtopia.Game_Data/"),
+        zip_file_path=os.path.join(snowtopiaPath, "Blizzard/Data/out.bd"),
+        zip_extraction_path=os.path.join(snowtopiaPath, "Blizzard/Data/ZipOut"),
+        base_path=snowtopiaPath,
         headers=headers
     )
 

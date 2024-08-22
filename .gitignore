@@ -1,1 +1,5 @@
+# Python stuff, we dont care about!
 __pycache__
+
+# May have the Assembly-CSharp.dll!!!
+bin

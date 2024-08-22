@@ -7,20 +7,16 @@ from zipfile import ZipFile
 
 logger = logging.getLogger(__name__)
 
-def print_text(text):
-    """Print text in cyan color."""
-    logger.info(text)
-
-def install_latest_version(download_url, zip_file_path, zip_extraction_path, data_path, headers):
+def install_latest_version(download_url, zip_file_path, zip_extraction_path, base_path, headers):
     """Download, extract, and patch the latest version of the game."""
-    print_text("Downloading Latest Version.")
+    logger.info("Downloading Latest Version.")
     download_latest_version(download_url, headers, zip_file_path)
     
-    print_text("Extracting Files.")
+    logger.info("Extracting Files.")
     extract_file(zip_file_path, zip_extraction_path)
     
-    print_text("Patching Game.")
-    patch_game(zip_extraction_path, data_path)
+    logger.info("Patching Game.")
+    patch_game(zip_extraction_path, base_path)
 
 def download_latest_version(url, headers, zip_file_path):
     """Download the latest version from the given URL."""
@@ -37,16 +33,29 @@ def extract_file(zip_file_path, extraction_path):
         zip_ref.extractall(extraction_path)
     os.remove(zip_file_path)
 
-def patch_game(zip_extraction_path, data_path):
+def patch_game(zip_extraction_path, base_path):
     """Apply patches from extracted files to the game."""
     json_update_file = os.path.join(zip_extraction_path, "installation/update.json")
 
     with open(json_update_file) as json_file:
         data = json.load(json_file)
 
-    for patch in data.get("patches", []):
-        src = os.path.join(zip_extraction_path, patch["src"])
-        dst = os.path.join(data_path, patch["dst"])
+    # Create all necessary folders specified in the JSON
+    for folder in data["installation"]["folders"]:
+        dst_folder = os.path.join(base_path, folder)
+        os.makedirs(dst_folder, exist_ok=True)
+
+    # Iterate through files in the 'installation/files' section of the JSON
+    for src_file, dst_folder in data["installation"]["files"].items():
+        # Construct the full source path
+        src = os.path.join(zip_extraction_path, "installation", src_file)
+        # Construct the full destination path
+        dst = os.path.join(base_path, dst_folder, os.path.basename(src_file))
+        
+        # Ensure the destination directory exists (just in case)
+        os.makedirs(os.path.dirname(dst), exist_ok=True)
+        
+        # Copy the file
         shutil.copyfile(src, dst)
 
-    print_text("Game patched successfully.")
+    logger.info("Game patched successfully.")
