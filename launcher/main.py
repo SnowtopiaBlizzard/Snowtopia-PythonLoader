@@ -33,6 +33,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)  # Create a logger object
 
 snowtopiaPath = r"C:\Program Files (x86)\Steam\steamapps\common\Snowtopia"
+token = "your-token-here"
 
 killSnowtopia = not (str(args.f).find("k") == -1)
 startSnowtopia = str(args.f).find("n") == -1
@@ -52,7 +53,6 @@ headers = {
     "User-Agent": "SnowtopiaBlizzard/BootAgent",
     "Host": "bamsestudio.dk"
 }
-token = "your-token-here"
 
 logger.info("Booting up Blizzard!")
 

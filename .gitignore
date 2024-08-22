@@ -6,3 +6,8 @@ bin
 
 # Blizzard temp log
 launcher/blizzard.log
+
+# Pyinstaller building
+launcher/build
+launcher/main.spec
+launcher/dist
