@@ -3,3 +3,6 @@ __pycache__
 
 # May have the Assembly-CSharp.dll!!!
 bin
+
+# Blizzard temp log
+launcher/blizzard.log
