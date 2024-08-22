@@ -3,6 +3,9 @@ import shutil
 import os
 import json
 import requests
+
+import assembly
+
 from zipfile import ZipFile
 
 logger = logging.getLogger(__name__)
@@ -17,6 +20,9 @@ def install_latest_version(download_url, zip_file_path, zip_extraction_path, bas
     
     logger.info("Patching Game.")
     patch_game(zip_extraction_path, base_path)
+
+    logger.info("Patching Assembly")
+    assembly.patch_assembly(zip_extraction_path, base_path)
 
 def download_latest_version(url, headers, zip_file_path):
     """Download the latest version from the given URL."""

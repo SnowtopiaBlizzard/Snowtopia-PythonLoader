@@ -25,8 +25,11 @@ snowtopiaPath = r"C:\Program Files (x86)\Steam\steamapps\common\Snowtopia"
 parser = argparse.ArgumentParser(description="Snowtopia Blizzard Mod Updater")
 parser.add_argument("--version", required=False, default="latest", help="Version name to download")
 parser.add_argument("--download-components", required=False, default=None, help="Components to download")
-parser.add_argument("-r", help="Restart the program. (Set to y)", required=False)
+parser.add_argument("-f", default="", help="Flags. (include k to kill Snowtopia) (include n to not start Snowtopia)", required=False)
 args = parser.parse_args()
+
+killSnowtopia = not (str(args.f).find("k") == -1)
+startSnowtopia = str(args.f).find("n") == -1
 
 os.makedirs(snowtopiaPath + r"\Blizzard", exist_ok=True)
 os.makedirs(snowtopiaPath + r"\Blizzard\Data", exist_ok=True)
@@ -35,7 +38,7 @@ if (not os.path.exists(snowtopiaPath + r"\Blizzard\Data\Version.txt")):
     open(snowtopiaPath + r"\Blizzard\Data\Version.txt", "w").close()
 
 # Restart the Snowtopia process if requested
-if args.r == "y":
+if killSnowtopia:
     kill.kill_process_by_name("Snowtopia.Game.exe")
 
 # Define headers and token for HTTP requests
@@ -91,5 +94,6 @@ else:
 
     logger.info("Latest version is now downloaded, starting game.")
 
-# Start the Snowtopia game
-os.system(f'call "{snowtopia_exe}"')
+if (startSnowtopia):
+    # Start the Snowtopia game
+    os.system(f'call "{snowtopia_exe}"')
