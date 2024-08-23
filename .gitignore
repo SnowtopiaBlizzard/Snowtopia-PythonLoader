@@ -9,7 +9,7 @@ launcher/blizzard.log
 
 # Pyinstaller building
 launcher/build
-launcher/main.spec
+launcher/*.spec
 launcher/dist
 
 # for validator.py

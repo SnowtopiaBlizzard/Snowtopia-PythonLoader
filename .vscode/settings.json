@@ -2,6 +2,6 @@
     "files.exclude": {
         "**/__pycache__": true,
         "launcher/build": true,
-        "launcher/main.spec": true,
+        "launcher/*.spec": true,
     }
 }
