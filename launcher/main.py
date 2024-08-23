@@ -32,8 +32,15 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)  # Create a logger object
 
-snowtopiaPath = r"C:\Program Files (x86)\Steam\steamapps\common\Snowtopia"
-token = "your-token-here"
+snowtopiaPath = r"D:\RunableStuff\Programmer\Steam\steamapps\common\Snowtopia"
+token = "invaild"
+token_path = os.path.join(os.getenv('APPDATA'), "blizzard.token")
+
+logger.debug("Finding token!")
+if (os.path.exists(token_path)):
+    with open(token_path, "r") as f:
+        token = f.read().removeprefix("blizzardtoken://").replace("/", "")
+        logger.debug(f"Token: {token}")
 
 killSnowtopia = not (str(args.f).find("k") == -1)
 startSnowtopia = str(args.f).find("n") == -1

@@ -19,7 +19,7 @@ def install_newest(version_file_path, headers):
 
     logger.info("Fetching versions")
     try:
-        response = requests.get("https://bamsestudio.dk/api/snowtopia/fetch_versions", headers=headers)
+        response = requests.get("https://bamsestudio.dk/api/snowtopia/fetch_versions", headers=headers)        
         response.raise_for_status()
         versions_content = response.json()
     except requests.RequestException as e:

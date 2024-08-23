@@ -11,3 +11,6 @@ launcher/blizzard.log
 launcher/build
 launcher/main.spec
 launcher/dist
+
+# for validator.py
+Assembly-CSharp.dll

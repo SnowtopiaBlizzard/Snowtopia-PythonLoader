@@ -4,6 +4,7 @@ import os
 import json
 import requests
 
+import urllib.parse
 import assembly
 
 from zipfile import ZipFile
@@ -26,12 +27,20 @@ def install_latest_version(download_url, zip_file_path, zip_extraction_path, bas
 
 def download_latest_version(url, headers, zip_file_path):
     """Download the latest version from the given URL."""
+    # Ensure the URL is clean and encoded properly
+    url = url.strip()  # Remove leading/trailing whitespace and newline characters
+    url = urllib.parse.quote(url, safe=':/')  # Encode the URL properly
+
     response = requests.get(url, headers=headers, stream=True)
-    if response.status_code == 200:
-        with open(zip_file_path, 'wb') as file:
-            shutil.copyfileobj(response.raw, file)
-    else:
-        raise Exception(f"Failed to download file. Status code: {response.status_code}")
+    
+    if response.status_code != 200:
+        logger.error("Invalid session, while downloading. If you are not downloading a beta version, please ping @gaupestudio.no on the discord.")
+        exit()
+            
+    with open(zip_file_path, 'wb') as file:
+        shutil.copyfileobj(response.raw, file)
+
+    logger.info("Download completed successfully.")
 
 def extract_file(zip_file_path, extraction_path):
     """Extract files from a zip archive."""
