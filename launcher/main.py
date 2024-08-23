@@ -32,7 +32,7 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)  # Create a logger object
 
-snowtopiaPath = r"D:\RunableStuff\Programmer\Steam\steamapps\common\Snowtopia"
+snowtopiaPath = os.getcwd()
 token = "invaild"
 token_path = os.path.join(os.getenv('APPDATA'), "blizzard.token")
 
